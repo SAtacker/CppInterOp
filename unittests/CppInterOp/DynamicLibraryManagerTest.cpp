@@ -5,6 +5,8 @@
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/Path.h"
 
+#include "../../lib/Interpreter/Paths.h"
+
 // This function isn't referenced outside its translation unit, but it
 // can't use the "static" keyword because its address is used for
 // GetMainExecutable (since some platforms don't support taking the
@@ -31,6 +33,10 @@ TEST(DynamicLibraryManagerTest, Sanity) {
 #ifdef __APPLE__
   std::string PathToTestSharedLib =
       Cpp::SearchLibrariesForSymbol("_ret_zero", /*system_search=*/false);
+  std::string err_ = "";
+  auto dlopen_handle = Cpp::utils::platform::DLOpen(
+      "./unittests/CppInterOp/libTestSharedLib.dylib", err_);
+  (void)dlopen_handle;
 #else
   std::string PathToTestSharedLib =
       Cpp::SearchLibrariesForSymbol("ret_zero", /*system_search=*/false);
